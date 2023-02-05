@@ -1,7 +1,7 @@
 import {makeBoard} from "./board.js";
 
-let rows = 8;
-let cols = 8;
+let rows = 16;
+let cols = 32;
 const board = makeBoard(rows, cols);
 
 const curBoard = document.querySelector(".board");

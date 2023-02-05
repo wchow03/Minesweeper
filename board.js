@@ -8,6 +8,7 @@
 
 // rows represents y
 // cols represents x
+
 const board = []; // Contains a 2D array of cells
 export function makeBoard(rows, cols) {
     // 2D array of divs each with an (x,y) pair
@@ -22,7 +23,7 @@ export function makeBoard(rows, cols) {
         board.push(rowArr);
     }
     console.log("MINESWEEPER");
-    createMines(9, rows, cols);
+    createMines(99, rows, cols);
     numberCells(rows, cols);
     return board;
 }
@@ -39,7 +40,11 @@ function createMines(numMines, rows, cols) {
         } else if (curCell.status == 9) {
             i--;
         }
-        curCell.square.style.backgroundColor = "red";
+        let bomb = document.createElement('img');
+        bomb.src = "./images/bomb.png";
+        bomb.style.width = "100%";
+        bomb.style.height = "100%";
+        curCell.square.append(bomb);
     }
 }
 
@@ -68,8 +73,72 @@ function numberCell(cell) {
     }
 
     cell.status = count;
+    if (cell.status == 1) {
+        let one = document.createElement('img');
+        one.src = "./images/one.png";
+        one.style.width = "100%";
+        one.style.height = "100%";
+        cell.square.append(one);
+    } 
 
-    cell.square.innerHTML = count;
+    if (cell.status == 2) {
+        let two = document.createElement('img');
+        two.src = "./images/two.png";
+        two.style.width = "100%";
+        two.style.height = "100%";
+        cell.square.append(two);
+    }
+
+    if (cell.status == 3) {
+        let three = document.createElement('img');
+        three.src = "./images/three.png";
+        three.style.width = "100%";
+        three.style.height = "100%";
+        cell.square.append(three);
+    }
+
+    if (cell.status == 4) {
+        let four = document.createElement('img');
+        four.src = "./images/four.png";
+        four.style.width = "100%";
+        four.style.height = "100%";
+        cell.square.append(four);
+    }
+
+    if (cell.status == 5) {
+        let five = document.createElement('img');
+        five.src = "./images/five.png";
+        five.style.width = "100%";
+        five.style.height = "100%";
+        cell.square.append(five);
+    } 
+
+    if (cell.status == 6) {
+        let six = document.createElement('img');
+        six.src = "./images/six.png";
+        six.style.width = "100%";
+        six.style.height = "100%";
+        cell.square.append(six);
+    }
+
+    if (cell.status == 7) {
+        let seven = document.createElement('img');
+        seven.src = "./images/seven.png";
+        seven.style.width = "100%";
+        seven.style.height = "100%";
+        cell.square.append(seven);
+    } 
+
+    if (cell.status == 8) {
+        let eight = document.createElement('img');
+        eight.src = "./images/eight.png";
+        eight.style.width = "100%";
+        eight.style.height = "100%";
+        cell.square.append(eight);
+    }
+
+    
+
 }
 
 
