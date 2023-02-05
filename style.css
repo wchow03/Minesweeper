@@ -1,0 +1,22 @@
+body {
+    background-color: #252525;
+}
+
+.board {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: inline-grid;
+    grid-template-columns: repeat(var(--col), 1fr);
+    grid-template-rows: repeat(var(--row), 1fr);
+    background-color: grey;
+    padding: 5px;
+}
+
+.board > * {
+    width: 20px;
+    height: 20px;
+    border: 1px solid black;
+}
+
