@@ -10,13 +10,15 @@ body {
     display: inline-grid;
     grid-template-columns: repeat(var(--col), 1fr);
     grid-template-rows: repeat(var(--row), 1fr);
+    gap: 2px;
     background-color: grey;
     padding: 5px;
+    border-radius: 5px;
 }
 
 .board > * {
     width: 20px;
     height: 20px;
-    border: 1px solid black;
+    border: 1px solid rgb(88, 88, 88);
 }
 
