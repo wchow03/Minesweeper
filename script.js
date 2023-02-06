@@ -2,6 +2,7 @@ import {makeBoard} from "./board.js";
 
 let rows = 16;
 let cols = 32;
+// AFTER COMPLETING WORKING GAME MAKE IT SUCH THAT FIRST CLICK ON BOARD IS A BLANK SQUARE
 const board = makeBoard(rows, cols);
 
 const curBoard = document.querySelector(".board");

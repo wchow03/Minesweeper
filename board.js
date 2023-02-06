@@ -50,12 +50,109 @@ function createMines(numMines, rows, cols) {
 }
 
 function numberCells(rows, cols) {
+    // CASE 1: square on first row
+    // CASE 2: square on last row
+    // CASE 3: square first col
+    // CASE 4: square on last col
+    // CASE 5: square anywhere but edges
+    // First two cases check for corner boundaries
+    numberCellsFirstCol(rows)
+    numberCellsLastCol(cols, rows);
+    numberCellsFirstRow(cols);
+    numberCellsLastRow(cols, rows);
+
     for (let y = 1; y < rows-1; y++) {
         for (let x = 1; x < cols-1; x++) {
             let curCell = board[y][x];
             if (curCell.mine == false) {
                 numberCell(curCell, x, y);
             }
+        }
+    }
+}
+
+function numberCellsFirstRow(cols) {
+    for (let x = 1; x < cols-1; x++) {
+        let curCell = board[0][x];
+        if (curCell.mine == false) {
+            let count = 0;
+            if (board[0][x-1].mine == true) count++;
+            if (board[1][x-1].mine == true) count++;
+            if (board[1][x].mine == true) count++;
+            if (board[1][x+1].mine == true) count++;
+            if (board[0][x+1].mine == true) count++;
+            curCell.status = count;
+            openCell(curCell);
+        }
+    }
+}
+
+function numberCellsLastRow(cols, rows) {
+    for (let x = 1; x < cols-1; x++) {
+        let curCell = board[rows-1][x];
+        if (curCell.mine == false) {
+            let count = 0;
+            if (board[rows-1][x-1].mine == true) count++;
+            if (board[rows-1][x+1].mine == true) count++;
+            if (board[rows-2][x-1].mine == true) count++;
+            if (board[rows-2][x].mine == true) count++;
+            if (board[rows-2][x+1].mine == true) count++;
+            curCell.status = count;
+            openCell(curCell);
+        }
+    }
+}
+
+function numberCellsFirstCol(rows) {
+    for (let y = 0; y < rows; y++) {
+        let curCell = board[y][0];
+        if (curCell.mine == false) {
+            let count = 0;
+            if (y == 0) {
+                // right, below, bottom right
+                if (board[1][0].mine == true) count++;
+                if (board[1][1].mine == true) count++;
+                if (board[0][1].mine == true) count++;
+            }
+            else if (y == rows-1) {
+                if (board[rows-2][0].mine == true) count++;
+                if (board[rows-2][1].mine == true) count++;
+                if (board[rows-1][1].mine == true) count++;
+            } else {
+                if (board[y-1][0].mine == true) count++;
+                if (board[y-1][1].mine == true) count++;
+                if (board[y][1].mine == true) count++;
+                if (board[y+1][1].mine == true) count++;
+                if (board[y+1][0].mine == true) count++;
+            }
+            curCell.status = count;
+            openCell(curCell);
+        }
+    }
+}
+
+function numberCellsLastCol(cols, rows) {
+    for (let y = 0; y < rows; y++) {
+        let curCell = board[y][cols-1];
+        if (curCell.mine == false) {
+            let count = 0;
+            if (y == 0) {
+                if (board[1][cols-2].mine == true) count++;
+                if (board[1][cols-1].mine == true) count++;
+                if (board[0][cols-2].mine == true) count++;
+            } else if (y == rows-1) {
+                if (board[rows-2][cols-2].mine == true) count++;
+                if (board[rows-2][cols-1].mine == true) count++;
+                if (board[rows-1][cols-2].mine == true) count++;
+            } else {
+                if (board[y-1][cols-1].mine == true) count++;
+                if (board[y-1][cols-2].mine == true) count++;
+                if (board[y][cols-2].mine == true) count++;
+                if (board[y+1][cols-2].mine == true) count++;
+                if (board[y+1][cols-1].mine == true) count++;
+            }
+            curCell.status = count;
+            openCell(curCell);
         }
     }
 }
@@ -74,7 +171,10 @@ function numberCell(cell) {
     }
 
     cell.status = count;
+    openCell(cell);
+}
 
+function openCell(cell) {
     if (cell.mine == false) {
         cell.square.style.border = "none";
     }
@@ -82,6 +182,8 @@ function numberCell(cell) {
     if (cell.status == 0) {
         cell.square.style.backgroundColor = "#BCBCBC";
     }
+
+    cell.square.style.border = "1px solid #585858";
 
     if (cell.status == 1) {
         let one = document.createElement('img');
@@ -146,9 +248,6 @@ function numberCell(cell) {
         eight.style.height = "100%";
         cell.square.append(eight);
     }
-
-
-
 }
 
 
