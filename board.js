@@ -1,15 +1,17 @@
+import {labelCell} from "./cell.js";
 // Start with 8x8 grid of minesweeper
 // Easy: 8x8, 9 mines
 // Medium: 16x16, 40 mines
 // Hard: 16x32: 99 mines
 // Accessing array is board[y][x]
 // 0 = empty square      | 1 = 1 mine  connected  | 2 = 2 mines connected | 3 = 3 mines connected | 4 = 4 mines connected  | 5 = 5 mines connected
-// 6 = 6 mines connected | 7 = 7 mines connected  | 8 = 8 mines connected | 9 = flag              | mine = false           | covered = true
+// 6 = 6 mines connected | 7 = 7 mines connected  | 8 = 8 mines connected | flagged = true              | mine = false           | covered = true
 
 // rows represents y
 // cols represents x
 
 const board = []; // Contains a 2D array of cells
+const mines = []; // Array of bomb positions in (x,y) coordinates
 export function makeBoard(rows, cols) {
     // 2D array of divs each with an (x,y) pair
     for (let y = 0; y < rows; y++) {
@@ -17,13 +19,13 @@ export function makeBoard(rows, cols) {
         for (let x = 0; x < cols; x++) {
             const status = 0;
             const square = document.createElement('div');
-            const cell = {square, x, y, status, covered: true, mine: false};
+            const cell = {square, x, y, status, flagged: false, covered: true, mine: false};
             rowArr.push(cell);
         }
         board.push(rowArr);
     }
     console.log("MINESWEEPER");
-    createMines(99, rows, cols);
+    createMines(9, rows, cols);
     numberCells(rows, cols);
     return board;
 }
@@ -41,13 +43,18 @@ function createMines(numMines, rows, cols) {
             bomb.src = "./images/bomb.png";
             bomb.style.width = "100%";
             bomb.style.height = "100%";
+            bomb.style.display = "none";
+            bomb.style.backgroundColor = "red";
             curCell.square.append(bomb);
-            curCell.square.style.border = "none";
-        } else if (curCell.mine == true) {
+        } else {
             i--;
         }
+        let minePos = {x: xPos, y: xPos};
+        mines.push(minePos);
     }
 }
+
+// =========================================================================================================
 
 function numberCells(rows, cols) {
     // CASE 1: square on first row
@@ -82,7 +89,7 @@ function numberCellsFirstRow(cols) {
             if (board[1][x+1].mine == true) count++;
             if (board[0][x+1].mine == true) count++;
             curCell.status = count;
-            openCell(curCell);
+            labelCell(curCell);
         }
     }
 }
@@ -98,7 +105,7 @@ function numberCellsLastRow(cols, rows) {
             if (board[rows-2][x].mine == true) count++;
             if (board[rows-2][x+1].mine == true) count++;
             curCell.status = count;
-            openCell(curCell);
+            labelCell(curCell);
         }
     }
 }
@@ -109,7 +116,6 @@ function numberCellsFirstCol(rows) {
         if (curCell.mine == false) {
             let count = 0;
             if (y == 0) {
-                // right, below, bottom right
                 if (board[1][0].mine == true) count++;
                 if (board[1][1].mine == true) count++;
                 if (board[0][1].mine == true) count++;
@@ -126,7 +132,7 @@ function numberCellsFirstCol(rows) {
                 if (board[y+1][0].mine == true) count++;
             }
             curCell.status = count;
-            openCell(curCell);
+            labelCell(curCell);
         }
     }
 }
@@ -152,7 +158,7 @@ function numberCellsLastCol(cols, rows) {
                 if (board[y+1][cols-1].mine == true) count++;
             }
             curCell.status = count;
-            openCell(curCell);
+            labelCell(curCell);
         }
     }
 }
@@ -169,85 +175,166 @@ function numberCell(cell) {
             }
         }
     }
-
     cell.status = count;
-    openCell(cell);
+    labelCell(cell);
 }
 
-function openCell(cell) {
-    if (cell.mine == false) {
-        cell.square.style.border = "none";
-    }
-
-    if (cell.status == 0) {
-        cell.square.style.backgroundColor = "#BCBCBC";
-    }
-
-    cell.square.style.border = "1px solid #585858";
-
-    if (cell.status == 1) {
-        let one = document.createElement('img');
-        one.src = "./images/one.png";
-        one.style.width = "100%";
-        one.style.height = "100%";
-        cell.square.append(one);
-    } 
-
-    if (cell.status == 2) {
-        let two = document.createElement('img');
-        two.src = "./images/two.png";
-        two.style.width = "100%";
-        two.style.height = "100%";
-        cell.square.append(two);
-    }
-
-    if (cell.status == 3) {
-        let three = document.createElement('img');
-        three.src = "./images/three.png";
-        three.style.width = "100%";
-        three.style.height = "100%";
-        cell.square.append(three);
-    }
-
-    if (cell.status == 4) {
-        let four = document.createElement('img');
-        four.src = "./images/four.png";
-        four.style.width = "100%";
-        four.style.height = "100%";
-        cell.square.append(four);
-    }
-
-    if (cell.status == 5) {
-        let five = document.createElement('img');
-        five.src = "./images/five.png";
-        five.style.width = "100%";
-        five.style.height = "100%";
-        cell.square.append(five);
-    } 
-
-    if (cell.status == 6) {
-        let six = document.createElement('img');
-        six.src = "./images/six.png";
-        six.style.width = "100%";
-        six.style.height = "100%";
-        cell.square.append(six);
-    }
-
-    if (cell.status == 7) {
-        let seven = document.createElement('img');
-        seven.src = "./images/seven.png";
-        seven.style.width = "100%";
-        seven.style.height = "100%";
-        cell.square.append(seven);
-    } 
-
-    if (cell.status == 8) {
-        let eight = document.createElement('img');
-        eight.src = "./images/eight.png";
-        eight.style.width = "100%";
-        eight.style.height = "100%";
-        cell.square.append(eight);
+export function revealCell(cell) {
+    if (cell.flagged == false) {
+        if (cell.mine == true) {
+            alert("YOU HIT A BOMB");
+        } else if (cell.status == 0) {
+            cell.square.querySelector("img").style.display = "block";
+            cell.covered = false;
+            revealNeighbors(cell);
+        } else {
+            cell.square.querySelector("img").style.display = "block";
+            cell.covered = false;
+        }
     }
 }
 
+// ======================================================================================================
 
+function revealNeighbors(cell, cols, rows) {
+    // If any adjacent cell has a status of 0 add that cell to queue and continue, 
+    // otherwise reveal all adjacent numbers
+    let xPos = cell.x;
+    let yPos = cell.y;
+
+    // Recursion:
+        // Base cases:
+            // If all cells adjacent to it do not have status 0 and the empty cell that is adjacent to it has
+            // covered == false
+            // If cell.y - 1 < 0 then stop
+            // If cell.x - 1 < 0 then stop
+            // If cell.x + 1 > cols then stop
+            // If cell.y + 1 > rows then stop
+        // Check to see if any adjacent cells have a status of 0 and covered == true
+            // If they do, then call revealNeighbors with that adjacent cell
+            // Otherwise reveal the adjacent cell
+        
+    if (!(xPos-1 < 0) && !(xPos+1 >= cols) && !(yPos-1 < 0) && !(yPos+1 >= rows)) {
+        for (let y = yPos-1; y <= yPos+1; y++) {
+            for (let x = xPos-1; x <= xPos+1; x++) {
+                let curCell = board[y][x];
+                if (x == xPos && y == yPos) continue;
+                if ((curCell.status == 0) && (curCell.covered == true)) {
+                    curCell.covered = false;
+                    revealNeighbors(curCell);
+                } else {
+                    curCell.square.querySelector("img").style.display = "block";
+                    curCell.covered = false;
+                }
+            }
+        }
+    }
+
+        // let topLeft = board[y-1][x-1];
+        // let topMid = board[y-1][x];
+        // let topRight = board[y-1][x+1];
+        // let midLeft = board[y][x-1];
+        // let midRight = board[y][x+1];
+        // let botLeft = board[y+1][x-1];
+        // let botMid = board[y+1][x];
+        // let botRight = board[y+1][x+1];
+
+        // for (let y = yPos-1; y <= yPos+1; y++) {
+        //     for (let x = xPos-1; x <= xPos+1; x++) {
+        //         let curCell = board[y][x];
+        //         if (x == xPos || y == yPos) continue;
+        //         if ((curCell.status == 0) && (curCell.covered == true)) {
+        //             curCell.covered = false;
+        //             revealNeighbors(curCell);
+        //         } else {
+        //             curCell.square.querySelector("img").style.display = "block";
+        //             curCell.covered = false;
+        //         }
+        //     }
+        // }
+
+        // if (topLeft.status == 0 && topLeft.covered == true) {
+        //     topLeft.covered = false;
+        //     revealNeighbors(topLeft);
+        // } else {
+        //     topLeft.square.querySelector("img").style.display = "block";
+        //     topLeft.covered = false;
+        // }
+
+        // if (topMid.status == 0 && topMid.covered == true) {
+        //     topMid.covered = false;
+        //     revealNeighbors(topMid);
+        // } else {
+        //     topMid.square.querySelector("img").style.display = "block";
+        //     topMid.covered = false;
+        // }
+
+        // if (topRight.status == 0 && topRight.covered == true) {
+        //     topRight.covered = false;
+        //     revealCell(topRight);
+        // } else {
+        //     topRight.square.querySelector("img").style.display = "block";
+        //     topRight.covered = false;
+        // }
+
+        // if (midLeft.status == 0 && midLeft.covered == true) {
+        //     midLeft.covered = false;
+        //     revealNeighbors(midLeft);
+        // } else {
+        //     midLeft.square.querySelector("img").style.display = "block";
+        //     midLeft.covered = false;
+        // }
+
+        // if (midRight.status == 0 && midRight.covered == true) {
+        //     midRight.covered = false;
+        //     revealNeighbors(midRight);
+        // } else {
+        //     midRight.square.querySelector("img").style.display = "block";
+        //     midRight.covered = false;
+        // }
+
+        // if (botRight.status == 0 && botRight.covered == true) {
+        //     botRight.covered = false;
+        //     revealCell(botRight);
+        // } else {
+        //     botRight.square.querySelector("img").style.display = "block";
+        //     botRight.covered = false;
+        // }
+
+        // if (botLeft.status == 0 && botLeft.covered == true) {
+        //     botLeft.covered = false;
+        //     revealNeighbors(botLeft);
+        // } else {
+        //     botLeft.square.querySelector("img").style.display = "block";
+        //     botLeft.covered = false;
+        // }
+
+        // if (botMid.status == 0 && botMid.covered == true) {
+        //     botMid.covered = false;
+        //     revealNeighbors(botMid);
+        // } else {
+        //     botMid.square.querySelector("img").style.display = "block";
+        //     botMid.covered = false;
+        // }
+}
+
+// ============================================================================================
+
+export function flagCell(cell) {
+
+    if (cell.covered == true) {
+        if (cell.flagged == false) {
+            let cellImg = document.createElement("img");
+            cellImg.className = "flag";
+            cellImg.src = "./images/flag.png";
+            cellImg.style.width = "100%";
+            cellImg.style.height = "100%";
+            cell.square.append(cellImg);
+            cell.flagged = true;
+        } else {
+            let curFlag = cell.square.querySelector(".flag");
+            curFlag.remove();
+            cell.flagged = false;
+        }
+    }
+}
